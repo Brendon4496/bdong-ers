@@ -7,10 +7,10 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
-//@Entity
+@Entity
 public class Reimbursement {
 
-//    @Id @GeneratedValue
+    @Id @GeneratedValue
     private int reimbursementId;
 
     private @Getter @Setter String description;
