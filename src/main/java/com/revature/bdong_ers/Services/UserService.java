@@ -1,5 +1,7 @@
 package com.revature.bdong_ers.Services;
 
+import com.revature.DTOs.UserLoginDTO;
+import com.revature.DTOs.UserIdDTO;
 import com.revature.bdong_ers.Entities.Reimbursement;
 import com.revature.bdong_ers.Entities.User;
 import com.revature.bdong_ers.Repositories.UserRepository;
@@ -30,13 +32,16 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User loginAccount(User user) {
+    public User loginAccount(UserLoginDTO userLoginDTO) {
         // User must exist
-        User validUser = userRepository.findByUsername(user.getUsername())
+        User validUser = userRepository.findByUsername(userLoginDTO.getUsername())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
 
+        System.out.println(userLoginDTO.getPassword());
+        System.out.println(validUser.getPassword());
+
         // Passwords must match
-        if (BCrypt.checkpw(user.getPassword(), validUser.getPassword())) {
+        if (!BCrypt.checkpw(userLoginDTO.getPassword(), validUser.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 

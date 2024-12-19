@@ -1,5 +1,8 @@
 package com.revature.bdong_ers.Controllers;
 
+import com.revature.DTOs.UserLoginDTO;
+import com.revature.DTOs.UserResponseDTO;
+import com.revature.DTOs.UserIdDTO;
 import com.revature.bdong_ers.Entities.Reimbursement;
 import com.revature.bdong_ers.Entities.User;
 import com.revature.bdong_ers.Services.ReimbursementService;
@@ -30,19 +33,23 @@ public class ERSController {
 
     @PostMapping(value="/register")
     public ResponseEntity<User> registerUser(@RequestBody User user) {
-        System.out.println("TEST REGISTER");
         return ResponseEntity.ok().body(userService.registerAccount(user));
     }
 
     @PostMapping(value="/login")
-    public ResponseEntity<User> loginUser(@RequestBody User user) {
-        System.out.println("TEST LOGIN");
-        return ResponseEntity.ok().body(userService.loginAccount(user));
+    public ResponseEntity<UserIdDTO> loginUser(@RequestBody UserLoginDTO userLoginDTO) {
+        User user = userService.loginAccount(userLoginDTO);
+        return ResponseEntity.ok().body(new UserIdDTO(user));
     }
 
     @GetMapping()
-    public ResponseEntity<List<User>> getUsers() {
-        return ResponseEntity.ok().body(userService.getAllUsers());
+    public ResponseEntity<List<UserResponseDTO>> getUsers() {
+        List<UserResponseDTO> users = userService.getAllUsers()
+            .stream()
+            .map(UserResponseDTO::new)
+            .toList();
+            
+        return ResponseEntity.ok().body(users);
     }
 
     //TODO: Permission check
