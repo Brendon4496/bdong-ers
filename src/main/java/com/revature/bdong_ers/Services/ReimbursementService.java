@@ -30,9 +30,9 @@ public class ReimbursementService {
             System.out.println("----------------------");
             System.out.println("CREATED WITHOUT STATUS");
             System.out.println("----------------------");
-            System.out.println("Setting to pending....");
+            System.out.println("Setting to PENDING....");
             System.out.println("----------------------");
-            reimbursement.setStatus("Pending");
+            reimbursement.setStatus("PENDING");
         }
         return reimbursementRepository.save(reimbursement);
     }

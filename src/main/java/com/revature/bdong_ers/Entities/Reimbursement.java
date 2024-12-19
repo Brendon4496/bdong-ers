@@ -29,8 +29,8 @@ public class Reimbursement {
 
     //TODO: These defaults don't do anything with .save(), figure out alternative
     @Column(name = "status")
-    @ColumnDefault("Pending")
-    private @Setter String status = "Pending";
+    @ColumnDefault("PENDING")
+    private @Setter String status = "PENDING";
 
     @Column(name = "userId")
     private @Setter int userId;
