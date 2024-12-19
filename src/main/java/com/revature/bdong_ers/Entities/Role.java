@@ -2,6 +2,8 @@ package com.revature.bdong_ers.Entities;
 
 import java.io.Serializable;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 
@@ -18,5 +20,6 @@ public class Role implements Serializable {
    private String name;
 
    @Column(name = "modifyOtherUsers")
-   private boolean modifyOtherUsers = false;
+   @ColumnDefault("false")
+   private boolean modifyOtherUsers;
 }

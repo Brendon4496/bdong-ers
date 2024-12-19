@@ -1,8 +1,8 @@
 package com.revature.bdong_ers.Controllers;
 
 import com.revature.DTOs.UserLoginDTO;
-import com.revature.DTOs.UserResponseDTO;
 import com.revature.DTOs.UserIdDTO;
+import com.revature.DTOs.UserResponseDTO;
 import com.revature.bdong_ers.Entities.Reimbursement;
 import com.revature.bdong_ers.Entities.User;
 import com.revature.bdong_ers.Services.ReimbursementService;
@@ -32,24 +32,30 @@ public class ERSController {
     }
 
     @PostMapping(value="/register")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
-        return ResponseEntity.ok().body(userService.registerAccount(user));
+    public ResponseEntity<UserIdDTO> registerUser(@RequestBody User user) {
+        User registeredUser = userService.registerAccount(user);
+        return ResponseEntity.ok().body(new UserIdDTO(registeredUser));
     }
 
     @PostMapping(value="/login")
-    public ResponseEntity<UserIdDTO> loginUser(@RequestBody UserLoginDTO userLoginDTO) {
+    public ResponseEntity<UserResponseDTO> loginUser(@RequestBody UserLoginDTO userLoginDTO) {
         User user = userService.loginAccount(userLoginDTO);
-        return ResponseEntity.ok().body(new UserIdDTO(user));
+        return ResponseEntity.ok().body(new UserResponseDTO(user));
     }
 
-    @GetMapping()
-    public ResponseEntity<List<UserResponseDTO>> getUsers() {
-        List<UserResponseDTO> users = userService.getAllUsers()
+    @GetMapping("/users")
+    public ResponseEntity<List<UserIdDTO>> getUsers() {
+        List<UserIdDTO> users = userService.getAllUsers()
             .stream()
-            .map(UserResponseDTO::new)
+            .map(UserIdDTO::new)
             .toList();
             
         return ResponseEntity.ok().body(users);
+    }
+
+    @GetMapping(value="/users/{id}")
+    public ResponseEntity<User> getUser(@PathVariable int id, @RequestBody User user) {
+        return ResponseEntity.ok().body(userService.getUser(id));
     }
 
     //TODO: Permission check
@@ -70,18 +76,17 @@ public class ERSController {
     }
 
     // TODO: Session checking, properly check user to determine reimbursements to grab
-    @GetMapping(value="reimbursements")
+    @GetMapping(value="/reimbursements")
     public ResponseEntity<List<Reimbursement>> getReimbursements(@RequestBody User user) {
         return ResponseEntity.ok().body(reimbursementService.viewReimbursements(user));
     }
 
-    // TODO: Refactor function to use status rather than getting only pending
-    @GetMapping(value="reimbursements/{status}")
+    @GetMapping(value="/reimbursements/{status}")
     public ResponseEntity<List<Reimbursement>> getReimbursementsByStatus(@PathVariable String status) {
-        return ResponseEntity.ok().body(reimbursementService.viewPendingReimbursements(null));
+        return ResponseEntity.ok().body(reimbursementService.viewReimbursementsByStatus(status));
     }
 
-    @PatchMapping(value="reimbursements/{id}")
+    @PatchMapping(value="/reimbursements/{id}")
     public ResponseEntity<Reimbursement> patchReimbursementById(@PathVariable int id, @RequestBody Reimbursement reimbursement) {
         return ResponseEntity.ok().body(reimbursementService.updateReimbursement(id, reimbursement));
     }

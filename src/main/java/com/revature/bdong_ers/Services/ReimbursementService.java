@@ -25,14 +25,27 @@ public class ReimbursementService {
         if (reimbursement.getAmount() <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
+
+        if (reimbursement.getStatus() == null) {
+            System.out.println("----------------------");
+            System.out.println("CREATED WITHOUT STATUS");
+            System.out.println("----------------------");
+            System.out.println("Setting to pending....");
+            System.out.println("----------------------");
+            reimbursement.setStatus("Pending");
+        }
         return reimbursementRepository.save(reimbursement);
     }
     public List<Reimbursement> viewReimbursements(User user) {
         return (List<Reimbursement>) reimbursementRepository.findAll();
     }
 
-    public List<Reimbursement> viewPendingReimbursements(User user) {
-        return reimbursementRepository.findByUserId(user.getUserId()).orElse(null);
+    public List<Reimbursement> viewReimbursementsByStatus(String status) {
+        return reimbursementRepository.findByStatus(status).orElse(null);
+    }
+
+    public List<Reimbursement> viewReimbursementsByStatus(User user, String status) {
+        return reimbursementRepository.findByUserIdAndStatus(user.getUserId(), status).orElse(null);
     }
 
     public Reimbursement updateReimbursement(int id, Reimbursement reimbursement) {

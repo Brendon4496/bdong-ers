@@ -1,5 +1,7 @@
 package com.revature.bdong_ers.Entities;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,8 +27,10 @@ public class Reimbursement {
     @Column(name = "amount")
     private @Setter int amount;
 
+    //TODO: These defaults don't do anything with .save(), figure out alternative
     @Column(name = "status")
-    private @Setter String status = "PENDING";
+    @ColumnDefault("Pending")
+    private @Setter String status = "Pending";
 
     @Column(name = "userId")
     private @Setter int userId;

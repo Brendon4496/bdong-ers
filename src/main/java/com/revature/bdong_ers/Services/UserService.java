@@ -1,7 +1,7 @@
 package com.revature.bdong_ers.Services;
 
 import com.revature.DTOs.UserLoginDTO;
-import com.revature.DTOs.UserIdDTO;
+import com.revature.DTOs.UserResponseDTO;
 import com.revature.bdong_ers.Entities.Reimbursement;
 import com.revature.bdong_ers.Entities.User;
 import com.revature.bdong_ers.Repositories.UserRepository;
@@ -67,6 +67,10 @@ public class UserService {
 
     public List<User> getAllUsers() {
         return (List<User>) userRepository.findAll();
+    }
+
+    public User getUser(int id) {
+        return userRepository.findByUserId(id).orElse(null);
     }
     
     public int deleteUser(int id) {
