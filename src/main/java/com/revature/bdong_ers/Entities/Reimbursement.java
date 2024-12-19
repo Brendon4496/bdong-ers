@@ -26,7 +26,7 @@ public class Reimbursement {
     private @Setter int amount;
 
     @Column(name = "status")
-    private @Setter String status;
+    private @Setter String status = "PENDING";
 
     @Column(name = "userId")
     private @Setter int userId;

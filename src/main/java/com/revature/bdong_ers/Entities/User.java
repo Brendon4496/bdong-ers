@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,10 +20,10 @@ public class User {
     @Id @GeneratedValue
     private int userId;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private @Setter String username;
 
-    // Need to define for hashing
+    // Need to define setter for hashing
     @Column(name = "password")
     private String password;
 
@@ -32,16 +33,20 @@ public class User {
     @Column(name = "lastName")
     private @Setter String lastName;
 
-    @Column(name = "role")
-    private @Setter String role;
-//    private @Setter Role role;
+    @JoinColumn(name = "roleId")
+    private @Setter Integer roleId;
 
-    public User(String username, String password, String firstName, String lastName, String role) {
+    /**
+     * Defaut constructor, stop erroring on me!
+     */
+    public User() {}
+
+    public User(String username, String password, String firstName, String lastName, int roleId) {
         this.username = username;
-        this.password = password;
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
         this.firstName = firstName;
         this.lastName = lastName;
-        this.role = role;
+        this.roleId = roleId;
     }
 
     public void setPassword(String password) {
