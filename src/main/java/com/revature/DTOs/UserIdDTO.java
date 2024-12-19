@@ -12,17 +12,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserIdDTO {
+
     private int userId;
-    private String username;
-    private String firstName;
-    private String lastName;
-    private int roleId;
 
     public UserIdDTO(User user) {
         this.userId = user.getUserId();
-        this.username = user.getUsername();
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
-        this.roleId = user.getRoleId();
     }
 }
