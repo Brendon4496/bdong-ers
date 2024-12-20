@@ -63,4 +63,16 @@ public class ReimbursementService {
         updatedReimbursement.setStatus(reimbursement.getStatus());
         return this.reimbursementRepository.save(updatedReimbursement);
     }
+
+    // Temporary while there is no front end - should use previous function once there is a GUI
+    // to actually change all details of a reimbursement
+    public Reimbursement updateReimbursementStatus(int id, String status) {
+
+        // Reimbursement must already exist
+        Reimbursement updatedReimbursement = reimbursementRepository.findById(id).
+                orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+
+        updatedReimbursement.setStatus(status);
+        return this.reimbursementRepository.save(updatedReimbursement);
+    }
 }

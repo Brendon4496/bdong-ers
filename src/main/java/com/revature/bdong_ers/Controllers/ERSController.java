@@ -1,6 +1,7 @@
 package com.revature.bdong_ers.Controllers;
 
 import com.revature.DTOs.UserLoginDTO;
+import com.revature.DTOs.ReimbursementStatusDTO;
 import com.revature.DTOs.UserIdDTO;
 import com.revature.DTOs.UserResponseDTO;
 import com.revature.bdong_ers.Entities.Reimbursement;
@@ -89,5 +90,11 @@ public class ERSController {
     @PatchMapping(value="/reimbursements/{id}")
     public ResponseEntity<Reimbursement> patchReimbursementById(@PathVariable int id, @RequestBody Reimbursement reimbursement) {
         return ResponseEntity.ok().body(reimbursementService.updateReimbursement(id, reimbursement));
+    }
+
+    @PatchMapping(value="/reimbursements")
+    public ResponseEntity<Reimbursement> patchReimbursementByIdAndStatus(@RequestBody ReimbursementStatusDTO reimbursementStatusDTO) {
+        return ResponseEntity.ok().body(reimbursementService
+        .updateReimbursementStatus(reimbursementStatusDTO.getReimbursementId(), reimbursementStatusDTO.getStatus()));
     }
 }
