@@ -9,9 +9,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -35,11 +37,6 @@ public class User {
 
     @JoinColumn(name = "roleId")
     private @Setter Integer roleId;
-
-    /**
-     * Defaut constructor, stop erroring on me!
-     */
-    public User() {}
 
     public User(String username, String password, String firstName, String lastName, int roleId) {
         this.username = username;
