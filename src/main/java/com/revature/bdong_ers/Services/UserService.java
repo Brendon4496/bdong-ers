@@ -27,6 +27,10 @@ public class UserService {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
+
+        // Force employee role
+        user.setRoleId(1);
+
         return userRepository.save(user);
     }
 

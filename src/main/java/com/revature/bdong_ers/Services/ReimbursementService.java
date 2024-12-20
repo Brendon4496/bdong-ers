@@ -36,6 +36,11 @@ public class ReimbursementService {
         }
         return reimbursementRepository.save(reimbursement);
     }
+
+    public Reimbursement viewReimbursement(int reimbursementId) {
+        return reimbursementRepository.findById(reimbursementId).orElse(null);
+    }
+    
     public List<Reimbursement> viewReimbursements(User user) {
         return (List<Reimbursement>) reimbursementRepository.findAll();
     }

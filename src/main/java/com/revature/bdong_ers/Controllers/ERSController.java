@@ -7,8 +7,9 @@ import com.revature.bdong_ers.DTOs.UserResponseDTO;
 import com.revature.bdong_ers.DTOs.UserTokenDTO;
 import com.revature.bdong_ers.Entities.Reimbursement;
 import com.revature.bdong_ers.Entities.User;
-import com.revature.bdong_ers.Services.JWTService;
+import com.revature.bdong_ers.Services.AuthService;
 import com.revature.bdong_ers.Services.ReimbursementService;
+import com.revature.bdong_ers.Services.RoleService;
 import com.revature.bdong_ers.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,13 +23,13 @@ public class ERSController {
 
     private ReimbursementService reimbursementService;
     private UserService userService;
-    private JWTService jwtService;
+    private AuthService authService;
 
     @Autowired
-    public ERSController(ReimbursementService reimbursementService, UserService userService, JWTService jwtService) {
+    public ERSController(ReimbursementService reimbursementService, UserService userService, AuthService authService) {
         this.reimbursementService = reimbursementService;
         this.userService = userService;
-        this.jwtService = jwtService;
+        this.authService = authService;
     }
 
     @GetMapping(value="/ping")
@@ -40,7 +41,7 @@ public class ERSController {
     @PostMapping(value="/register")
     public ResponseEntity<UserIdDTO> registerUser(@RequestBody User user) {
         User registeredUser = userService.registerAccount(user);
-        String token = jwtService.generateToken(registeredUser);
+        String token = authService.generateToken(registeredUser);
         return ResponseEntity.ok().header("Authorization", token).body(new UserIdDTO(registeredUser));
     }
 
@@ -51,7 +52,7 @@ public class ERSController {
         String token = "";
         UserResponseDTO response = null;
         if (validUser != null) {
-            token = jwtService.generateToken(validUser);
+            token = authService.generateToken(validUser);
             response = new UserResponseDTO(validUser);
         }
         return ResponseEntity.ok().header("Authorization", token).body(response);
@@ -60,10 +61,8 @@ public class ERSController {
     @GetMapping("/users")
     public ResponseEntity<List<UserIdDTO>> getUsers(@RequestHeader("Authorization") String token) {
 
-        UserTokenDTO userInfo = jwtService.decodeToken(token);
-
         // Check if user is not an admin
-        if (userInfo.getRoleId() <= 1) {
+        if (!authService.hasAdminPermissions(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
@@ -79,10 +78,8 @@ public class ERSController {
     public ResponseEntity<User> getUser(@RequestHeader("Authorization") String token,
             @PathVariable int id) {
 
-        UserTokenDTO userInfo = jwtService.decodeToken(token);
-        
         // Check if user is not an admin AND if user is not obtaining their own account info
-        if (userInfo.getRoleId() <= 1 && userInfo.getUserId() != id) {
+        if (!authService.hasAdminPermissionsOrUserMatches(token, id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
@@ -93,10 +90,8 @@ public class ERSController {
     public ResponseEntity<User> patchUser(@RequestHeader("Authorization") String token,
             @PathVariable int id, @RequestBody User user) {
 
-        UserTokenDTO userInfo = jwtService.decodeToken(token);
-
         // Check if user is not an admin AND if user is not updating their own account
-        if (userInfo.getRoleId() <= 1 && userInfo.getUserId() != id) {
+        if (!authService.hasAdminPermissionsOrUserMatches(token, id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
         return ResponseEntity.ok().body(userService.updateUser(id, user));
@@ -105,11 +100,9 @@ public class ERSController {
     @DeleteMapping(value="/users/{id}")
     public ResponseEntity<Integer> deleteUser(@RequestHeader("Authorization") String token,
             @PathVariable int id) {
-        
-        UserTokenDTO userInfo = jwtService.decodeToken(token);
-        
+         
         // Check if user is not an admin AND if user is not updating their own account
-        if (userInfo.getRoleId() <= 1 && userInfo.getUserId() != id) {
+        if (!authService.hasAdminPermissionsOrUserMatches(token, id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
         return ResponseEntity.ok().body(userService.deleteUser(id));
@@ -119,10 +112,8 @@ public class ERSController {
     public ResponseEntity<Reimbursement> postReimbursement(@RequestHeader("Authorization") String token,
             @RequestBody Reimbursement reimbursement) {
         
-        UserTokenDTO userInfo = jwtService.decodeToken(token);
-
         // Check if reimbursement creator does not match token user
-        if (userInfo.getUserId() != reimbursement.getUserId()) {
+        if (!authService.userMatches(token, reimbursement.getUserId())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
         return ResponseEntity.ok().body(reimbursementService.createReimbursement(reimbursement));
@@ -132,10 +123,8 @@ public class ERSController {
     public ResponseEntity<List<Reimbursement>> getReimbursements(@RequestHeader("Authorization") String token,
             @RequestBody User user) {
 
-        UserTokenDTO userInfo = jwtService.decodeToken(token);
-
         // Check if user is not an admin AND if user is attempting to view another account's information
-        if (userInfo.getRoleId() <= 1 && userInfo.getUserId() != user.getUserId()) {
+        if (!authService.hasAdminPermissionsOrUserMatches(token, user.getUserId())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
         return ResponseEntity.ok().body(reimbursementService.viewReimbursements(user));
@@ -145,10 +134,8 @@ public class ERSController {
     public ResponseEntity<List<Reimbursement>> getReimbursementsByStatus(@RequestHeader("Authorization") String token,
             @PathVariable String status) {
         
-        UserTokenDTO userInfo = jwtService.decodeToken(token);
-
         // Check if user exists
-        if (userInfo.getUserId() > 0) {
+        if (!authService.userExists(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
         return ResponseEntity.ok().body(reimbursementService.viewReimbursementsByStatus(status));
@@ -158,11 +145,15 @@ public class ERSController {
     public ResponseEntity<Reimbursement> patchReimbursementById(@RequestHeader("Authorization") String token,
             @PathVariable int id, @RequestBody Reimbursement reimbursement) {
         
-        UserTokenDTO userInfo = jwtService.decodeToken(token);
-
         // Check if user exists
-        if (userInfo.getUserId() > 0) {
+        if (!authService.userExists(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        // If user isn't an admin, force keep previous status
+        if (!authService.hasAdminPermissions(token)) {
+            String previousStatus = reimbursementService.viewReimbursement(reimbursement.getReimbursementId()).getStatus();
+            reimbursement.setStatus(previousStatus);
         }
         return ResponseEntity.ok().body(reimbursementService.updateReimbursement(id, reimbursement));
     }
@@ -171,10 +162,8 @@ public class ERSController {
     public ResponseEntity<Reimbursement> patchReimbursementByIdAndStatus(@RequestHeader("Authorization") String token,
             @RequestBody ReimbursementStatusDTO reimbursementStatusDTO) {
 
-        UserTokenDTO userInfo = jwtService.decodeToken(token);
-
         // Check if user is not an admin. Employees cannot update their own reimbursement statuses.
-        if (userInfo.getRoleId() <= 1) {
+        if (!authService.hasAdminPermissions(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
         return ResponseEntity.ok().body(reimbursementService
