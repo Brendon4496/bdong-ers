@@ -1,8 +1,6 @@
 package com.revature.bdong_ers.Services;
 
-import com.revature.DTOs.UserLoginDTO;
-import com.revature.DTOs.UserResponseDTO;
-import com.revature.bdong_ers.Entities.Reimbursement;
+import com.revature.bdong_ers.DTOs.UserLoginDTO;
 import com.revature.bdong_ers.Entities.User;
 import com.revature.bdong_ers.Repositories.UserRepository;
 

@@ -1,9 +1,9 @@
 package com.revature.bdong_ers.Controllers;
 
-import com.revature.DTOs.UserLoginDTO;
-import com.revature.DTOs.ReimbursementStatusDTO;
-import com.revature.DTOs.UserIdDTO;
-import com.revature.DTOs.UserResponseDTO;
+import com.revature.bdong_ers.DTOs.UserLoginDTO;
+import com.revature.bdong_ers.DTOs.ReimbursementStatusDTO;
+import com.revature.bdong_ers.DTOs.UserIdDTO;
+import com.revature.bdong_ers.DTOs.UserResponseDTO;
 import com.revature.bdong_ers.Entities.Reimbursement;
 import com.revature.bdong_ers.Entities.User;
 import com.revature.bdong_ers.Services.ReimbursementService;

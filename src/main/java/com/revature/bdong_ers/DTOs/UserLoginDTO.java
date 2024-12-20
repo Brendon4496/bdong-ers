@@ -1,4 +1,4 @@
-package com.revature.DTOs;
+package com.revature.bdong_ers.DTOs;
 
 import com.revature.bdong_ers.Entities.User;
 
