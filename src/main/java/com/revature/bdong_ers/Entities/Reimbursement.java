@@ -36,8 +36,7 @@ public class Reimbursement {
     @ColumnDefault("PENDING")
     private @Setter String status = "PENDING";
 
-    @ManyToOne
-    @JoinColumn(name = "userId")
+    @Column(name = "userId")
     private @Setter int userId;
 
 }

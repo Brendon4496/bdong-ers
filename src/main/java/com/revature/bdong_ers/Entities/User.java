@@ -36,8 +36,7 @@ public class User {
     @Column(name = "lastName")
     private @Setter String lastName;
 
-    @ManyToOne
-    @JoinColumn(name = "roleId")
+    @Column(name = "roleId")
     private @Setter Integer roleId;
 
     public User(String username, String password, String firstName, String lastName, int roleId) {

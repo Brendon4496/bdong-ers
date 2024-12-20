@@ -4,12 +4,10 @@ import com.revature.bdong_ers.DTOs.UserLoginDTO;
 import com.revature.bdong_ers.DTOs.ReimbursementStatusDTO;
 import com.revature.bdong_ers.DTOs.UserIdDTO;
 import com.revature.bdong_ers.DTOs.UserResponseDTO;
-import com.revature.bdong_ers.DTOs.UserTokenDTO;
 import com.revature.bdong_ers.Entities.Reimbursement;
 import com.revature.bdong_ers.Entities.User;
 import com.revature.bdong_ers.Services.AuthService;
 import com.revature.bdong_ers.Services.ReimbursementService;
-import com.revature.bdong_ers.Services.RoleService;
 import com.revature.bdong_ers.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -105,6 +103,7 @@ public class ERSController {
         if (!authService.hasAdminPermissionsOrUserMatches(token, id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
+
         return ResponseEntity.ok().body(userService.deleteUser(id));
     }
 
