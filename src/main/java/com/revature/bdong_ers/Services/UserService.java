@@ -37,9 +37,6 @@ public class UserService {
         User validUser = userRepository.findByUsername(userLoginDTO.getUsername())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
 
-        System.out.println(userLoginDTO.getPassword());
-        System.out.println(validUser.getPassword());
-
         // Passwords must match
         if (!BCrypt.checkpw(userLoginDTO.getPassword(), validUser.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
