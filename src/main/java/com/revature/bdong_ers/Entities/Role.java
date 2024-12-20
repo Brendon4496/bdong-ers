@@ -6,10 +6,14 @@ import org.hibernate.annotations.ColumnDefault;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 @AllArgsConstructor
 @Entity
 @Table(name = "roles")
+@Getter
+@Setter
 public class Role implements Serializable {
 
    @Column(name = "roleId")
@@ -19,7 +23,7 @@ public class Role implements Serializable {
    @Column(name = "name")
    private String name;
 
-   @Column(name = "modifyOtherUsers")
+   @Column(name = "adminPermissions")
    @ColumnDefault("false")
-   private boolean modifyOtherUsers;
+   private boolean admin;
 }
