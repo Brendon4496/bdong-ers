@@ -34,7 +34,7 @@ This is a **Java Full Stack Employee Reimbursement System (ERS)**. The  ERS cent
 
 *Managers can do anything Users can do. No need for role checks on User functionalities.\**
 
-\**Managers cannot spoof reimbursements and submit them in other people's names as of the current implementation*
+\**Managers cannot spoof reimbursements and submit them in other people's names as of the current implementation. Makes sense to me at least? If this is considered bad, can be easily changed back.*
 
 
 **Users who are not logged in to the application can ONLY:**
