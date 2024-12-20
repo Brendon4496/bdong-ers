@@ -36,7 +36,7 @@ public class User {
     @Column(name = "lastName")
     private @Setter String lastName;
 
-    @Column(name = "roleId")
+    @JoinColumn(table = "roles")
     private @Setter Integer roleId;
 
     public User(String username, String password, String firstName, String lastName, int roleId) {

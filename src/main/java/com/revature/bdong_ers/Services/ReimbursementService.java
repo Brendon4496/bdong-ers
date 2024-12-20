@@ -41,7 +41,7 @@ public class ReimbursementService {
         return reimbursementRepository.findById(reimbursementId).orElse(null);
     }
     
-    public List<Reimbursement> viewReimbursements(User user) {
+    public List<Reimbursement> viewAllReimbursements() {
         return (List<Reimbursement>) reimbursementRepository.findAll();
     }
 
@@ -79,5 +79,9 @@ public class ReimbursementService {
 
         updatedReimbursement.setStatus(status);
         return this.reimbursementRepository.save(updatedReimbursement);
+    }
+
+    public int deleteByUserId(int userId) {
+        return reimbursementRepository.deleteByUserId(userId).orElse(null).size();
     }
 }

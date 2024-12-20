@@ -12,4 +12,5 @@ public interface ReimbursementRepository extends CrudRepository<Reimbursement, I
     Optional<List<Reimbursement>> findByStatus(String status);
     Optional<List<Reimbursement>> findByUserId(int userId);
     Optional<List<Reimbursement>> findByUserIdAndStatus(int userId, String status);
+    Optional<List<Reimbursement>> deleteByUserId(int userId);
 }

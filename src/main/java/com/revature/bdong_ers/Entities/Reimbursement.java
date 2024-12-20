@@ -36,7 +36,7 @@ public class Reimbursement {
     @ColumnDefault("PENDING")
     private @Setter String status = "PENDING";
 
-    @Column(name = "userId")
+    @JoinColumn(table = "users")
     private @Setter int userId;
 
 }
