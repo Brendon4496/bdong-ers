@@ -44,8 +44,7 @@ public class ReimbursementController {
     }
 
     @GetMapping(value="/reimbursements")
-    public ResponseEntity<List<Reimbursement>> getReimbursements(@RequestHeader("Authorization") String token,
-            @RequestBody UserIdDTO user) {
+    public ResponseEntity<List<Reimbursement>> getAllReimbursements(@RequestHeader("Authorization") String token) {
 
         // Check if user is not an admin
         if (!authService.hasAdminPermissions(token)) {
@@ -54,15 +53,37 @@ public class ReimbursementController {
         return ResponseEntity.ok().body(reimbursementService.viewAllReimbursements());
     }
 
-    @GetMapping(value="/reimbursements/{status}")
+    @GetMapping(value="/reimbursements/{id}")
+    public ResponseEntity<List<Reimbursement>> getReimbursementsByUser(@RequestHeader("Authorization") String token,
+            @PathVariable int id) {
+        
+        // Check if user is not an admin AND if user is not obtaining their own reimbursements
+        if (!authService.hasAdminPermissionsOrUserMatches(token, id)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+        return ResponseEntity.ok().body(reimbursementService.viewReimbursementsByUserId(id));
+    }
+
+    @GetMapping(value="/reimbursements/status/{status}")
     public ResponseEntity<List<Reimbursement>> getReimbursementsByStatus(@RequestHeader("Authorization") String token,
             @PathVariable String status) {
         
-        // Check if user exists
+        // Check if user is not an admin
         if (!authService.hasAdminPermissions(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-        return ResponseEntity.ok().body(reimbursementService.viewReimbursementsByStatus(status));
+        return ResponseEntity.ok().body(reimbursementService.viewReimbursementsByStatus(status.toUpperCase()));
+    }
+
+    @GetMapping(value="/reimbursements/{id}/status/{status}")
+    public ResponseEntity<List<Reimbursement>> getReimbursementsByUserIdAndStatus(@RequestHeader("Authorization") String token,
+            @PathVariable int id, @PathVariable String status) {
+        
+        // Check if user is not an admin AND if user is not obtaining their own reimbursements
+        if (!authService.hasAdminPermissionsOrUserMatches(token, id)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+        return ResponseEntity.ok().body(reimbursementService.viewReimbursementsByStatus(id, status.toUpperCase()));
     }
 
     @PatchMapping(value="/reimbursements/{id}")

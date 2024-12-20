@@ -45,12 +45,20 @@ public class ReimbursementService {
         return (List<Reimbursement>) reimbursementRepository.findAll();
     }
 
+    public List<Reimbursement> viewReimbursementsByUserId(int id) {
+        return (List<Reimbursement>) reimbursementRepository.findByUserId(id).orElse(null);
+    }
+
     public List<Reimbursement> viewReimbursementsByStatus(String status) {
         return reimbursementRepository.findByStatus(status).orElse(null);
     }
 
     public List<Reimbursement> viewReimbursementsByStatus(User user, String status) {
         return reimbursementRepository.findByUserIdAndStatus(user.getUserId(), status).orElse(null);
+    }
+
+    public List<Reimbursement> viewReimbursementsByStatus(int userId, String status) {
+        return reimbursementRepository.findByUserIdAndStatus(userId, status).orElse(null);
     }
 
     public Reimbursement updateReimbursement(int id, Reimbursement reimbursement) {

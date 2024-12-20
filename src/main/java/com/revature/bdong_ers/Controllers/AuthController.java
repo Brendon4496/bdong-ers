@@ -20,14 +20,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-public class ERSController {
+public class AuthController {
 
     private ReimbursementService reimbursementService;
     private UserService userService;
     private AuthService authService;
 
     @Autowired
-    public ERSController(ReimbursementService reimbursementService, UserService userService, AuthService authService) {
+    public AuthController(ReimbursementService reimbursementService, UserService userService, AuthService authService) {
         this.reimbursementService = reimbursementService;
         this.userService = userService;
         this.authService = authService;
